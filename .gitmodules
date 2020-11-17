@@ -9,3 +9,6 @@
 	url = git@github.com:Framatome/zlib.git
 	ignore = dirty
 	
+[submodule "vendor/third_party/lss"]
+	path = vendor/third_party/lss
+	url = git@github.com:Framatome/linux-syscall-support.git
