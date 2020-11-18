@@ -6,7 +6,7 @@ if(WIN32)
     enable_language(ASM_MASM)
 endif()
 
-add_subdirectory(vendor/zlib)
+add_subdirectory(vendor/zlib EXCLUDE_FROM_ALL)
 
 set(mini_chromium_src vendor/mini_chromium/base/debug/alias
     vendor/mini_chromium/base/files/file_path
