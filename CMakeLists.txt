@@ -1163,7 +1163,7 @@ if(WIN32)
         PROPERTIES
         COMPILE_FLAGS "/safeseh"
     )
-elsif(APPLE)
+elseif(APPLE)
     target_include_directories(
         crashpad_handler
         PRIVATE
