@@ -82,7 +82,6 @@ if(WIN32)
         PRIVATE
         /FS
         /W4
-        /WX
         /Zi
         /bigobj  # Support larger number of sections in obj file.
         /wd4100  # Unreferenced formal parameter.
@@ -168,7 +167,6 @@ if(WIN32)
         PRIVATE
         /FS
         /W4
-        /WX
         /Zi
         /bigobj  # Support larger number of sections in obj file.
         /wd4100  # Unreferenced formal parameter.
@@ -212,7 +210,6 @@ if(WIN32)
         PRIVATE
         /FS
         /W4
-        /WX
         /Zi
         /bigobj  # Support larger number of sections in obj file.
         /wd4100  # Unreferenced formal parameter.
@@ -297,7 +294,6 @@ if(WIN32)
         crashpad_tools
         PRIVATE
         /FS
-        /W4
         /WX
         /Zi
         /bigobj  # Support larger number of sections in obj file.
@@ -528,7 +524,6 @@ if(WIN32)
         PRIVATE
         /FS
         /W4
-        /WX
         /Zi
         /bigobj  # Support larger number of sections in obj file.
         /wd4100  # Unreferenced formal parameter.
@@ -672,7 +667,6 @@ if(WIN32)
         PRIVATE
         /FS
         /W4
-        /WX
         /Zi
         /bigobj  # Support larger number of sections in obj file.
         /wd4100  # Unreferenced formal parameter.
@@ -793,7 +787,6 @@ if(WIN32)
         PRIVATE
         /FS
         /W4
-        /WX
         /Zi
         /bigobj  # Support larger number of sections in obj file.
         /wd4100  # Unreferenced formal parameter.
@@ -971,7 +964,6 @@ if(WIN32)
         PRIVATE
         /FS
         /W4
-        /WX
         /Zi
         /bigobj  # Support larger number of sections in obj file.
         /wd4100  # Unreferenced formal parameter.
@@ -1083,7 +1075,6 @@ if(WIN32)
         PRIVATE
         /FS
         /W4
-        /WX
         /Zi
         /bigobj  # Support larger number of sections in obj file.
         /wd4100  # Unreferenced formal parameter.
