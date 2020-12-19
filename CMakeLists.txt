@@ -128,11 +128,11 @@ elseif(UNIX)
         target_link_libraries(
             mini_chromium
             PUBLIC
-            -framework ApplicationServices
-            -framework CoreFoundation
-            -framework Foundation
-            -framework IOKit
-            -framework Security
+            "-framework ApplicationServices"
+            "-framework CoreFoundation"
+            "-framework Foundation"
+            "-framework IOKit"
+            "-framework Security"
         )
     endif()
 endif()
@@ -402,7 +402,40 @@ if(WIN32)
         vendor/crashpad/util/win/session_end_watcher
     )
 elseif(APPLE)
-    set(crashpad_util_src ${crashpad_util_src}
+    find_package (Python COMPONENTS Interpreter REQUIRED)
+
+    set(crashpad_util_output ${CMAKE_CURRENT_BINARY_DIR}/util/mach/child_portUser.c
+        ${CMAKE_CURRENT_BINARY_DIR}/util/mach/child_portServer.c
+        ${CMAKE_CURRENT_BINARY_DIR}/util/mach/child_port.h
+        ${CMAKE_CURRENT_BINARY_DIR}/util/mach/child_portServer.h
+    )
+
+    add_custom_command(
+        COMMAND ${Python_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/vendor/crashpad/util/mach/mig.py --sdk ${CMAKE_OSX_SYSROOT} --include ${CMAKE_CURRENT_SOURCE_DIR}/vendor/crashpad/compat/mac
+        ${CMAKE_CURRENT_SOURCE_DIR}/vendor/crashpad/util/mach/child_port.defs ${CMAKE_CURRENT_BINARY_DIR}/util/mach/child_portUser.c ${CMAKE_CURRENT_BINARY_DIR}/util/mach/child_portServer.c ${CMAKE_CURRENT_BINARY_DIR}/util/mach/child_port.h ${CMAKE_CURRENT_BINARY_DIR}/util/mach/child_portServer.h
+        DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/vendor/crashpad/util/mach/mig.py ${CMAKE_CURRENT_SOURCE_DIR}/vendor/crashpad/util/mach/mig_gen.py ${CMAKE_CURRENT_SOURCE_DIR}/vendor/crashpad/util/mach/mig_fix.py ${CMAKE_CURRENT_SOURCE_DIR}/vendor/crashpad/util/mach/child_port.defs
+        OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/util/mach/child_portUser.c ${CMAKE_CURRENT_BINARY_DIR}/util/mach/child_portServer.c ${CMAKE_CURRENT_BINARY_DIR}/util/mach/child_port.h ${CMAKE_CURRENT_BINARY_DIR}/util/mach/child_portServer.h
+        COMMENT "Generating code using MIG for child_port."
+    )
+
+    foreach(source exc mach_exc notify)
+        set(crashpad_util_output ${crashpad_util_output}
+            ${CMAKE_CURRENT_BINARY_DIR}/util/mach/${source}User.c
+            ${CMAKE_CURRENT_BINARY_DIR}/util/mach/${source}Server.c
+            ${CMAKE_CURRENT_BINARY_DIR}/util/mach/${source}.h
+            ${CMAKE_CURRENT_BINARY_DIR}/util/mach/${source}Server.h
+        )
+
+        add_custom_command(
+            COMMAND ${Python_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/vendor/crashpad/util/mach/mig.py --sdk ${CMAKE_OSX_SYSROOT} --include ${CMAKE_CURRENT_SOURCE_DIR}/vendor/crashpad/compat/mac
+            ${CMAKE_OSX_SYSROOT}/usr/include/mach/${source}.defs ${CMAKE_CURRENT_BINARY_DIR}/util/mach/${source}User.c ${CMAKE_CURRENT_BINARY_DIR}/util/mach/${source}Server.c ${CMAKE_CURRENT_BINARY_DIR}/util/mach/${source}.h ${CMAKE_CURRENT_BINARY_DIR}/util/mach/${source}Server.h
+            DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/vendor/crashpad/util/mach/mig.py ${CMAKE_CURRENT_SOURCE_DIR}/vendor/crashpad/util/mach/mig_gen.py ${CMAKE_CURRENT_SOURCE_DIR}/vendor/crashpad/util/mach/mig_fix.py ${CMAKE_OSX_SYSROOT}/usr/include/mach/${source}.defs
+            OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/util/mach/${source}User.c ${CMAKE_CURRENT_BINARY_DIR}/util/mach/${source}Server.c ${CMAKE_CURRENT_BINARY_DIR}/util/mach/${source}.h ${CMAKE_CURRENT_BINARY_DIR}/util/mach/${source}Server.h
+            COMMENT "Generating code using MIG for ${source}."
+        )
+    endforeach()
+
+    set(crashpad_util_src ${crashpad_util_output} ${crashpad_util_src}
         vendor/crashpad/util/file/directory_reader_posix
         vendor/crashpad/util/file/file_io_posix
         vendor/crashpad/util/file/filesystem_posix
@@ -577,9 +610,9 @@ elseif(UNIX)
             PUBLIC
             zlibstatic
             bsm
-            -framework CoreFoundation
-            -framework Foundation
-            -framework IOKit
+            "-framework CoreFoundation"
+            "-framework Foundation"
+            "-framework IOKit"
         )
     endif()
 endif()
@@ -599,6 +632,7 @@ if(APPLE)
         PUBLIC
         vendor/crashpad/third_party/xnu/EXTERNAL_HEADERS/mach-o
         vendor/crashpad/compat/mac
+        ${CMAKE_CURRENT_BINARY_DIR}
     )
 endif()
 
@@ -854,7 +888,6 @@ set(crashpad_snapshot_src vendor/crashpad/snapshot/annotation_snapshot
     vendor/crashpad/snapshot/handle_snapshot
     vendor/crashpad/snapshot/memory_snapshot
     vendor/crashpad/snapshot/unloaded_module_snapshot
-    vendor/crashpad/snapshot/crashpad_types/crashpad_info_reader
     vendor/crashpad/snapshot/minidump/exception_snapshot_minidump
     vendor/crashpad/snapshot/minidump/memory_snapshot_minidump
     vendor/crashpad/snapshot/minidump/minidump_annotation_reader
@@ -898,7 +931,7 @@ elseif(APPLE)
         vendor/crashpad/snapshot/mac/module_snapshot_mac
         vendor/crashpad/snapshot/mac/process_reader_mac
         vendor/crashpad/snapshot/mac/process_snapshot_mac
-        vendor/crashpad/snapshot/mac/process_types
+        vendor/crashpad/snapshot/mac/process_types.cc
         vendor/crashpad/snapshot/mac/process_types/custom
         vendor/crashpad/snapshot/mac/system_snapshot_mac
         vendor/crashpad/snapshot/mac/thread_snapshot_mac
@@ -924,7 +957,6 @@ else()
         vendor/crashpad/snapshot/elf/elf_image_reader
         vendor/crashpad/snapshot/elf/elf_symbol_table_reader
         vendor/crashpad/snapshot/elf/module_snapshot_elf
-        vendor/crashpad/snapshot/crashpad_types/crashpad_info_reader
     )
 endif()
 
