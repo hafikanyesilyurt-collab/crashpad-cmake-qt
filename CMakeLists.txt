@@ -975,6 +975,7 @@ target_include_directories(
 target_link_libraries(
     crashpad_snapshot
     PUBLIC
+    crashpad_client
     mini_chromium
 )
 
