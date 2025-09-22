@@ -73,7 +73,7 @@ set(CRASHPAD_ENABLE_STACKTRACE ON CACHE BOOL "Activate stacktrace support`
 # To-Do
 
 ** toollar **
-- dump_syms, minidump_stackwalk indir kur
+- dump_syms, minidump_stackwalk customer ortamında indir kur
 - toolları /home/cerberus/.local/share/Ustek yazdırmalısın
 - toolları PATH'E eklemelisin
 
